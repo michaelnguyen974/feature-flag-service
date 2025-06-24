@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### feature flag file ###
+flags.flagd.json

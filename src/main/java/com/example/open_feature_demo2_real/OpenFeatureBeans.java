@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenFeatureBeans {
+    private final FlagdProvider provider = new FlagdProvider();
 
     @Bean
     public OpenFeatureAPI OpenFeatureAPI() {
@@ -15,7 +16,7 @@ public class OpenFeatureBeans {
 
         // Use flagd as the OpenFeature provider and use default configurations
         try {
-            openFeatureAPI.setProviderAndWait(new FlagdProvider());
+            openFeatureAPI.setProviderAndWait(provider);
         } catch (OpenFeatureError e) {
             throw new RuntimeException("Failed to set OpenFeature provider", e);
         }
