@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  flagd-controller:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./flags.flagd.json:/app/flags.flagd.json
+    environment:
+      - FLAGD_FILE_PATH=/app/flags.flagd.json
+      - SERVER_PORT=8081
+    networks:
+      - flagd-network
+
+  flagd-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - flagd-controller
+    networks:
+      - flagd-network
+
+  flagd:
+    image: ghcr.io/open-feature/flagd:latest
+    ports:
+      - "8013:8013"
+    volumes:
+      - ./flags.flagd.json:/etc/flagd/flags.flagd.json
+    command: ["start", "--uri", "file:/etc/flagd/flags.flagd.json"]
+    networks:
+      - flagd-network
+
+networks:
+  flagd-network:
+    driver: bridge
